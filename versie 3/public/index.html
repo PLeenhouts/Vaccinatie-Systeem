@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welkom!</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Welkom!</h1>
+
+    <!-- Formulier voor naam + afspraak -->
+   <form id="plannerForm">
+  <label for="naam">Naam:</label>
+  <input type="text" id="naam" name="naam" required />
+
+  <label for="datum">Datum:</label>
+  <input type="date" id="datum" name="datum" required />
+
+  <label for="tijd">Tijd:</label>
+  <input type="time" id="tijd" name="tijd" required />
+
+  <button type="submit">Opslaan</button>
+</form>
+
+
+    <p id="groet"></p>
+
+    <!-- Knop om afspraken op te halen -->
+    <button id="haalAfsprakenOp">Toon alle afspraken</button>
+    <ul id="afsprakenLijst"></ul>
+  </div>
+
+  <script>
+    // Verstuur naam + afspraak
+   document.getElementById('plannerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const naam = document.getElementById('naam').value;
+  const datum = document.getElementById('datum').value;
+  const tijd = document.getElementById('tijd').value;
+
+  try {
+    const response = await fetch('http://localhost:3000/afspraak', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ naam, datum, tijd })
+    });
+
+    const data = await response.json();
+    document.getElementById('groet').textContent = data.groet;
+  } catch (err) {
+    document.getElementById('groet').textContent = 'Er ging iets mis.';
+  }
+});
+
+    // Haal alle afspraken op
+    document.getElementById('haalAfsprakenOp').addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:3000/afspraken');
+        const data = await response.json();
+
+        const lijst = document.getElementById('afsprakenLijst');
+        lijst.innerHTML = '';
+
+        data.afspraken.forEach(item => {
+          const li = document.createElement('li');
+          li.textContent = `${item.naam} heeft een afspraak op ${item.datum} om ${item.tijd}`;
+
+          lijst.appendChild(li);
+        });
+      } catch (err) {
+        document.getElementById('afsprakenLijst').innerHTML = '<li>Kon afspraken niet ophalen.</li>';
+      }
+    });
+  </script>
+</body>
+</html>

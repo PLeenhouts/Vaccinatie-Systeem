@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Welkom!</title>
+</head>
+<body>
+  <div class="container">
+    <h1>Welkom!</h1>
+    <form id="naamForm">
+      <label for="naam">Voer je naam in:</label>
+      <input type="text" id="naam" name="naam" required />
+      <button type="submit">Verstuur</button>
+    </form>
+    <p id="groet"></p>
+  </div>
+
+  <script>
+    document.getElementById('naamForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const naam = document.getElementById('naam').value;
+
+      const response = await fetch('/groet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ naam })
+      });
+
+      const data = await response.json();
+      document.getElementById('groet').textContent = data.groet;
+    });
+  </script>
+</body>
+</html>

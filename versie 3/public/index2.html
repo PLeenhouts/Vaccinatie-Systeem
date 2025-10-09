@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8">
+  <title>Demo Server</title>
+  <style>
+    body { font-family: sans-serif; margin: 2em; }
+    input, button { margin: 0.5em 0; display: block; }
+    .resultaat { margin-top: 1em; padding: 1em; background: #f0f0f0; }
+  </style>
+</head>
+<body>
+  <h1>Welkom bij de demo-server</h1>
+
+  <h2>Groet iemand</h2>
+  <input type="text" id="naamGroet" placeholder="Naam">
+  <button onclick="verstuurGroet()">Verstuur groet</button>
+
+  <h2>Maak een afspraak</h2>
+  <input type="text" id="naamAfspraak" placeholder="Naam">
+  <input type="date" id="datumAfspraak">
+  <input type="time" id="tijdAfspraak">
+  <button onclick="verstuurAfspraak()">Opslaan afspraak</button>
+
+  <h2>Bekijk alle afspraken</h2>
+  <button onclick="haalAfsprakenOp()">Ophalen</button>
+
+  <div class="resultaat" id="resultaat"></div>
+
+  <script>
+    function verstuurGroet() {
+      const naam = document.getElementById('naamGroet').value;
+      fetch('/groet', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ naam })
+      })
+      .then(res => res.json())
+      .then(data => toon(data.groet));
+    }
+
